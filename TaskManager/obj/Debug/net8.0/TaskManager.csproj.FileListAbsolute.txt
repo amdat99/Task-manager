@@ -135,3 +135,6 @@ E:\apps\task-manager\TaskManager\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Work
 E:\apps\task-manager\TaskManager\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\apps\task-manager\TaskManager\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\apps\task-manager\TaskManager\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\apps\task-manager\TaskManager\bin\Debug\net8.0\DotNetEnv.dll
+E:\apps\task-manager\TaskManager\bin\Debug\net8.0\Sprache.dll
+E:\apps\task-manager\TaskManager\obj\Debug\net8.0\TaskManager.sourcelink.json
