@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+@{
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,6 +14,7 @@
     <link rel="stylesheet" href="~/TaskManager.styles.css" asp-append-version="true" />
 </head>
 <body>
+<input id="RequestVerificationToken" type="hidden" value="@requestToken" />
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -36,14 +42,19 @@
         </main>
     </div>
 
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 999999">
+        <div class="toast-container"></div> 
+    </div>
+
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - TaskManager - <a asp-area="" asp-controller="Task" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>    
+    <script src="~/js/utils.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

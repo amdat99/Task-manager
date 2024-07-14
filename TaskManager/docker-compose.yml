@@ -16,7 +16,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      DB_Server: "mssqlserver"
     ports:
       - "8000:8080"
 

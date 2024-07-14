@@ -13,7 +13,7 @@
                     <form asp-controller="Task" asp-action="Add" method="post">
                             <div class="mb-3">
                                 <label for="Input_Title" class="form-label">Title</label>
-                                <input class="form-control" id="Input_Title" name="Title" required maxlength="100" value="@Model.Title">
+                                <input class="form-control completed-checkbox" id="Input_Title" name="Title" required maxlength="100" value="@Model.Title">
                                 <span asp-validation-for="Title" class="text-danger"></span> 
                             </div>
                             <div class="mb-3">
