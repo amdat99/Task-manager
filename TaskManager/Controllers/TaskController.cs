@@ -8,12 +8,13 @@ namespace TaskManager.Controllers;
 public class TaskController(ILogger<TaskController> logger, TaskManagerDBContext context) : Controller
 {
     private readonly ILogger<TaskController> _logger = logger;
+    private readonly TaskManagerDBContext _context = context;
 
     public IActionResult Index()
     {
-        var tasks = context.Task
-            .Take(30)
+        var tasks = _context.Task
             .OrderByDescending(t => t.TimeStamp)
+            .Take(30)
             .ToList();
         return View(tasks);
     }
@@ -23,12 +24,12 @@ public class TaskController(ILogger<TaskController> logger, TaskManagerDBContext
     {
         try 
         {
-            //Add simple pagination
-            string lastId = Request.Query["lastId"].FirstOrDefault() ?? "0";
-            var tasks = context.Task
-                .Where(t => t.Id > int.Parse(lastId))
-                .Take(30)
+            string lastIdString = Request.Query["lastId"].FirstOrDefault() ?? "0";
+            int lastId = int.TryParse(lastIdString, out int parsedId) ? parsedId : 0;
+            var tasks = _context.Task
+                .Where(t => t.Id > lastId)
                 .OrderByDescending(t => t.TimeStamp)
+                .Take(30)
                 .ToList();
             return Json(tasks);
         }
@@ -52,49 +53,41 @@ public class TaskController(ILogger<TaskController> logger, TaskManagerDBContext
         {
             return View("Add", task);
         }
-        context.Task.Add(task);
-        context.SaveChanges();
+
+        _context.Task.Add(task);
+        _context.SaveChanges();
         return RedirectToAction("Index");
     }
 
     [HttpPatch]
     public IActionResult SetTaskCompleted(int id)
     {
-        try
-        {
-            var task = context.Task.Find(id);
-            if (task == null)
-            {
-                return StatusCode(404, new { success = false, message = "Task not found" });
-            }
-            task.Completed = true;
-            context.SaveChanges();
-            return Json(new { success = true });
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error updating item");
-            return StatusCode(500, new { success = false, message = "Error updating task" });
-        }
+        return SetTaskCompletionStatus(id, true);
     }
 
     [HttpPatch]
     public IActionResult SetTaskNotCompleted(int id)
     {
+        return SetTaskCompletionStatus(id, false);
+    }
+
+    private IActionResult SetTaskCompletionStatus(int id, bool isCompleted)
+    {
         try
         {
-            var task = context.Task.Find(id);
+            var task = _context.Task.Find(id);
             if (task == null)
             {
                 return StatusCode(404, new { success = false, message = "Task not found" });
             }
-            task.Completed = false;
-            context.SaveChanges();
+
+            task.Completed = isCompleted;
+            _context.SaveChanges();
             return Json(new { success = true });
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error updating item");
+            _logger.LogError(e, "Error updating task");
             return StatusCode(500, new { success = false, message = "Error updating task" });
         }
     }
@@ -104,18 +97,19 @@ public class TaskController(ILogger<TaskController> logger, TaskManagerDBContext
     {
         try
         {
-            var task = context.Task.Find(id);
+            var task = _context.Task.Find(id);
             if (task == null)
             {
                 return StatusCode(404, new { success = false, message = "Task not found" });
             }
-            context.Task.Remove(task);
-            context.SaveChanges();
-            return Json( new { success = true });
+
+            _context.Task.Remove(task);
+            _context.SaveChanges();
+            return Json(new { success = true });
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error deleting item");
+            _logger.LogError(e, "Error deleting task");
             return StatusCode(500, new { success = false, message = "Error deleting task" });
         }
     }
